@@ -1,8 +1,8 @@
 ---@class FimTokens
----@field prefix string special token for FIM such as `\<PRE\>`
----@field suffix string special token for FIM such as `\<SUF\>`
----@field middle string special token for FIM such as `\<MID\>`
----@field end_of_middle string special token for FIM such as `<EOM>`
+---@field prefix string special token for FIM such as `<PRE>`
+---@field suffix string special token for FIM such as `<SUF>`
+---@field middle string special token for FIM such as `<MID>`
+---@field end_of_middle string? special token for FIM such as `<EOM>`
 
 ---@class FimConfig
 ---@field model string
@@ -60,7 +60,10 @@ local function create_callback(bufnr, pos, tokens)
   ---
   ---@param res CollamaGenerateResponse
   local function callback(res)
-    local response = res.response:gsub(tokens.end_of_middle .. '$', '')
+    local response = res.response
+    if tokens.end_of_middle then
+      response = response:gsub(tokens.end_of_middle .. '$', '')
+    end
     local extmark_id = show_extmark(bufnr, pos, response)
 
     vim.keymap.set('i', '<C-f>', function()
