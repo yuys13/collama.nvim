@@ -51,11 +51,17 @@ function M.generate(base_url, body, callback)
   local job = require('plenary.curl').post(api_url, {
     body = vim.json.encode(body),
     callback = vim.schedule_wrap(function(output)
+      -- If the job is cancelled, no action is taken.
+      if output.exit == 0 and output.status == nil then
+        return
+      end
+
       if output.exit ~= 0 or output.status ~= 200 then
         vim.notify '[collama]: request error'
         vim.notify('[collama]: output = ' .. vim.inspect(output), vim.log.levels.DEBUG)
         return
       end
+
       vim.notify('[collama]: get response ', vim.log.levels.DEBUG)
       local res = vim.json.decode(output.body)
       ---@cast res CollamaGenerateResponse

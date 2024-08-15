@@ -92,11 +92,32 @@ function M.request(config)
   local prefix, suffix = get_buffer(buffer, cur_pos)
   local prompt = create_prompt(prefix, suffix, config.tokens)
 
-  require('collama.api').generate('http://localhost:11434/api/', {
+  local job = require('collama.api').generate('http://localhost:11434/api/', {
     prompt = prompt,
     model = config.model,
     stream = false,
   }, create_callback(buffer, cur_pos, config.tokens))
+
+  return job
+end
+
+local timer = vim.uv.new_timer()
+
+function M.debounced_request(config)
+  timer:start(
+    1000,
+    0,
+    vim.schedule_wrap(function()
+      local job = M.request(config)
+      vim.api.nvim_create_autocmd({ 'InsertLeave', 'TextChangedI', 'CursorMovedI' }, {
+        once = true,
+        callback = function()
+          -- If exit_code is non-zero, plenary.curl outputs an error, so set it to 0.
+          job:shutdown(0)
+        end,
+      })
+    end)
+  )
 end
 
 return M
