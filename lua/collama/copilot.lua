@@ -112,6 +112,10 @@ function M.debounced_request(config)
       vim.api.nvim_create_autocmd({ 'InsertLeave', 'TextChangedI', 'CursorMovedI' }, {
         once = true,
         callback = function()
+          vim.notify('[collama]: job:shutdown()', vim.log.levels.DEBUG)
+          -- job.shutdown() does not stop the curl process.
+          -- job.pid is correct for integer because the return value of uv.spawn is an integer.
+          vim.uv.kill(job.pid --[[@as integer]])
           -- If exit_code is non-zero, plenary.curl outputs an error, so set it to 0.
           job:shutdown(0)
         end,
