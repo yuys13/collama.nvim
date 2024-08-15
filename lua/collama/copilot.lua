@@ -104,6 +104,11 @@ end
 local timer = vim.uv.new_timer()
 
 function M.debounced_request(config)
+  -- request only nomal buffer
+  if vim.o.buftype ~= '' then
+    timer:stop()
+    return
+  end
   timer:start(
     1000,
     0,
@@ -122,6 +127,13 @@ function M.debounced_request(config)
       })
     end)
   )
+  vim.api.nvim_create_autocmd({ 'InsertLeave' }, {
+    once = true,
+    callback = function()
+      -- vim.notify('[collama]: timer:stop()', vim.log.levelsire.DEBUG)
+      timer:stop()
+    end,
+  })
 end
 
 return M
