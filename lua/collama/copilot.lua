@@ -1,12 +1,12 @@
----@class FimTokens
+---@class CollamaFimTokens
 ---@field prefix string special token for FIM such as `<PRE>`
 ---@field suffix string special token for FIM such as `<SUF>`
 ---@field middle string special token for FIM such as `<MID>`
 ---@field end_of_middle string? special token for FIM such as `<EOM>`
 
----@class FimConfig
+---@class CollamaFimConfig
 ---@field model string
----@field tokens FimTokens
+---@field tokens CollamaFimTokens
 
 local ns_id = vim.api.nvim_create_namespace 'collama'
 
@@ -15,6 +15,7 @@ local M = {}
 ---get prefix and suffix from buffer
 ---@param bufnr number number of a buffer
 ---@param pos number[] cursor position
+---@return string prefix, string suffix
 local function get_buffer(bufnr, pos)
   local lines
   lines = vim.api.nvim_buf_get_text(bufnr, 0, 0, pos[1] - 1, pos[2], {})
@@ -28,7 +29,8 @@ end
 ---create prompt
 ---@param prefix string string before cursor
 ---@param suffix string string after cursor
----@param tokens FimTokens special tokens for FIM
+---@param tokens CollamaFimTokens special tokens for FIM
+---@return string prompt
 local function create_prompt(prefix, suffix, tokens)
   return tokens.prefix .. prefix .. tokens.suffix .. suffix .. tokens.middle
 end
@@ -54,7 +56,7 @@ end
 ---
 ---@param bufnr number number of a buffer
 ---@param pos number[] cursor position
----@param tokens FimTokens special tokens for FIM
+---@param tokens CollamaFimTokens special tokens for FIM
 ---@return fun(res:CollamaGenerateResponse)
 local function create_callback(bufnr, pos, tokens)
   ---
@@ -85,7 +87,7 @@ local function create_callback(bufnr, pos, tokens)
 end
 
 ---request Fill-In-the-Middle
----@param config FimConfig
+---@param config CollamaFimConfig
 function M.request(config)
   local buffer = vim.fn.bufnr()
   local cur_pos = vim.api.nvim_win_get_cursor(0)
@@ -103,6 +105,8 @@ end
 
 local timer = vim.uv.new_timer()
 
+---request Fill-In-the-Middle with debounce
+---@param config CollamaFimConfig
 function M.debounced_request(config)
   -- request only nomal buffer
   if vim.o.buftype ~= '' then

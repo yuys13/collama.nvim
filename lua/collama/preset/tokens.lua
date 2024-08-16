@@ -1,6 +1,6 @@
 local M = {}
 
---- @type FimTokens
+--- @type CollamaFimTokens
 M.codellama = {
   prefix = '<PRE>',
   suffix = ' <SUF>',
@@ -8,21 +8,21 @@ M.codellama = {
   -- end_of_middle = ' <EOT>',
 }
 
---- @type FimTokens
+--- @type CollamaFimTokens
 M.stable_code = {
   prefix = '<fim_prefix>',
   suffix = '<fim_suffix>',
   middle = '<fim_middle>',
 }
 
---- @type FimTokens
+--- @type CollamaFimTokens
 M.starcoder = {
   prefix = '<fim_prefix>',
   suffix = '<fim_suffix>',
   middle = '<fim_middle>',
 }
 
---- @type FimTokens
+--- @type CollamaFimTokens
 M.codegemma = {
   prefix = '<|fim_prefix|>',
   suffix = '<|fim_suffix|>',
