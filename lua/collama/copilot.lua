@@ -25,7 +25,7 @@ function M.get_default_config()
       model = 'codellama:7b-code',
       tokens = require('collama.preset.tokens').codellama,
     },
-    accept_key = '<C-f>',
+    accept_key = '<M-j>',
   }
   return config
 end

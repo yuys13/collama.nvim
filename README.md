@@ -35,4 +35,4 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
 1. Run `ollama pull codellama:7b-code`.
 1. Add `require('collama.preset.example').codellama()` to your init.lua.
 1. Open a file in nvim and enter insert mode. Wait for a while.
-1. Press `<C-f>` to accept the suggested code.
+1. Press `<M-j>` to accept the suggested code.
