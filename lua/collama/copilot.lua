@@ -89,7 +89,15 @@ local function create_callback(bufnr, pos, tokens, accept_key)
 
     vim.keymap.set('i', accept_key, function()
       vim.notify('[collama]: accept', vim.log.levels.INFO)
-      vim.api.nvim_buf_set_text(bufnr, pos[1] - 1, pos[2], pos[1] - 1, pos[2], vim.split(response, '\n'))
+
+      local now_pos = vim.api.nvim_win_get_cursor(0)
+      if pos[0] == now_pos[0] and pos[1] == now_pos[1] then
+        -- insert text at cursor position, and place cursor at end of inserted text.
+        vim.api.nvim_put(vim.split(response, '\n'), 'c', true, true)
+      else
+        -- just insert text.
+        vim.api.nvim_buf_set_text(bufnr, pos[1] - 1, pos[2], pos[1] - 1, pos[2], vim.split(response, '\n'))
+      end
       vim.api.nvim_buf_del_extmark(bufnr, ns_id, extmark_id)
       vim.keymap.del('i', accept_key)
     end)
