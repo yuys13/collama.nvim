@@ -77,7 +77,7 @@ end
 ---@param config CollamaConfig
 function M.debounced_request(config, debounce_time)
   state.clear()
-  -- request only nomal buffer
+  -- request only normal buffer
   if vim.o.buftype ~= '' then
     return
   end
