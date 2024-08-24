@@ -5,12 +5,22 @@ local M = {}
 local function attach_global(config)
   local augroup = vim.api.nvim_create_augroup('collama_preset_example_group', { clear = true })
 
+  -- auto execute debounced_request
   vim.api.nvim_create_autocmd({ 'InsertEnter', 'CursorMovedI', 'TextChangedI' }, {
     group = augroup,
     callback = function()
       require('collama.copilot').debounced_request(config, 1000)
     end,
   })
+  -- auto cancel
+  vim.api.nvim_create_autocmd({ 'InsertLeave' }, {
+    group = augroup,
+    callback = function()
+      require('collama.copilot').clear()
+    end,
+  })
+  -- map accept key
+  vim.keymap.set('i', '<M-j>', require('collama.copilot').accept)
 end
 
 ---
