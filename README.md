@@ -36,3 +36,57 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
 1. Add `require('collama.preset.example').codellama()` to your init.lua.
 1. Open a file in nvim and enter insert mode. Wait for a while.
 1. Press `<M-j>` to accept the suggested code.
+
+## Install
+
+If you use [lazy.nvim](https://github.com/folke/lazy.nvim),
+just add the following lines to your configuration file.
+
+```lua
+  {
+    'yuys13/collama.nvim',
+    lazy = false,
+    config = function()
+      require('collama.preset.example').codellama()
+    end,
+  },
+
+```
+
+or to setup manually,
+
+```lua
+  {
+    'yuys13/collama.nvim',
+    lazy = false,
+    config = function()
+      ---@type CollamaConfig
+      local config = {
+        base_url = 'http://localhost:11434/api/',
+        fim = {
+          model = 'codellama:7b-code',
+          tokens = require('collama.preset.tokens').codellama,
+        },
+      }
+
+      local augroup = vim.api.nvim_create_augroup('my_collama_augroup', { clear = true })
+
+      -- auto execute debounced_request
+      vim.api.nvim_create_autocmd({ 'InsertEnter', 'CursorMovedI', 'TextChangedI' }, {
+        group = augroup,
+        callback = function()
+          require('collama.copilot').debounced_request(config, 1000)
+        end,
+      })
+      -- auto cancel
+      vim.api.nvim_create_autocmd({ 'InsertLeave' }, {
+        group = augroup,
+        callback = function()
+          require('collama.copilot').clear()
+        end,
+      })
+      -- map accept key
+      vim.keymap.set('i', '<M-j>', require('collama.copilot').accept)
+    end,
+  },
+```
