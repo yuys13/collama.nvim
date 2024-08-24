@@ -24,6 +24,8 @@ local M = {}
 ---@field eval_count number
 ---@field eval_duration number
 
+local logger = require 'collama.logger'
+
 local url = {}
 ---Join path for URL
 ---@param ... string
@@ -44,8 +46,8 @@ end
 function M.generate(base_url, body, callback)
   local api_url = url.join(base_url, 'generate')
 
-  vim.notify('[collama]: request to ' .. api_url, vim.log.levels.DEBUG)
-  -- vim.notify('[collama]: request body = ' .. vim.inspect(body), vim.log.levels.DEBUG)
+  logger.info('request to ' .. api_url)
+  -- logger.debug('[collama]: request body = ' .. vim.inspect(body))
 
   ---@type Job
   local job = require('plenary.curl').post(api_url, {
@@ -57,12 +59,12 @@ function M.generate(base_url, body, callback)
       end
 
       if output.exit ~= 0 or output.status ~= 200 then
-        vim.notify '[collama]: request error'
-        vim.notify('[collama]: output = ' .. vim.inspect(output), vim.log.levels.DEBUG)
+        logger.log '[collama]: request error'
+        logger.debug('[collama]: output = ' .. vim.inspect(output))
         return
       end
 
-      vim.notify('[collama]: get response ', vim.log.levels.DEBUG)
+      logger.debug 'get response '
       local res = vim.json.decode(output.body)
       ---@cast res CollamaGenerateResponse
       callback(res)

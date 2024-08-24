@@ -6,6 +6,8 @@
 ---@field result string?
 ---@field extmark_id number?
 
+local logger = require 'collama.logger'
+
 vim.api.nvim_set_hl(0, 'CollamaSuggest', { link = 'Comment', default = true })
 
 local ns_id = vim.api.nvim_create_namespace 'collama'
@@ -28,7 +30,7 @@ function M.clear()
 
   -- shutdown Job
   if state.job then
-    vim.notify('[collama]: job:shutdown()', vim.log.levels.DEBUG)
+    logger.debug 'job:shutdown()'
     -- job.shutdown() does not stop the curl process.
     -- job.pid is correct for integer because the return value of uv.spawn is an integer.
     vim.uv.kill(state.job.pid --[[@as integer]])
@@ -104,7 +106,7 @@ function M.accept_result()
   if not state.result then
     return
   end
-  vim.notify('[collama]: accept', vim.log.levels.INFO)
+  logger.info 'accept'
 
   local now_pos = vim.api.nvim_win_get_cursor(0)
   if state.pos[0] == now_pos[0] and state.pos[1] == now_pos[1] then
