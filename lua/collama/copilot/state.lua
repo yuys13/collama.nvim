@@ -6,6 +6,8 @@
 ---@field result string?
 ---@field extmark_id number?
 
+vim.api.nvim_set_hl(0, 'CollamaSuggest', { link = 'Comment', default = true })
+
 local ns_id = vim.api.nvim_create_namespace 'collama'
 
 local M = {}
@@ -82,11 +84,11 @@ local function show_extmark(text)
   local lines = vim.split(text, '\n')
   local virt_text = table.remove(lines, 1)
   local opts = {}
-  opts.virt_text = { { virt_text, 'Comment' } }
+  opts.virt_text = { { virt_text, 'CollamaSuggest' } }
   opts.virt_text_pos = 'overlay'
   opts.virt_lines = {}
   for _, value in pairs(lines) do
-    table.insert(opts.virt_lines, { { value, 'Comment' } })
+    table.insert(opts.virt_lines, { { value, 'CollamaSuggest' } })
   end
   state.extmark_id = vim.api.nvim_buf_set_extmark(state.bufnr, ns_id, state.pos[1] - 1, state.pos[2], opts)
 end
