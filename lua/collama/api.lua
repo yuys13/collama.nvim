@@ -47,7 +47,7 @@ function M.generate(base_url, body, callback)
   local api_url = url.join(base_url, 'generate')
 
   logger.info('request to ' .. api_url)
-  -- logger.debug('[collama]: request body = ' .. vim.inspect(body))
+  -- logger.debug('request body = ' .. vim.inspect(body))
 
   ---@type Job
   local job = require('plenary.curl').post(api_url, {
@@ -59,12 +59,12 @@ function M.generate(base_url, body, callback)
       end
 
       if output.exit ~= 0 or output.status ~= 200 then
-        logger.log '[collama]: request error'
-        logger.debug('[collama]: output = ' .. vim.inspect(output))
+        logger.error 'request error'
+        logger.debug('output = ' .. vim.inspect(output))
         return
       end
 
-      logger.debug 'get response '
+      logger.info 'get response '
       local res = vim.json.decode(output.body)
       ---@cast res CollamaGenerateResponse
       callback(res)
