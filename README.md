@@ -37,10 +37,9 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
 1. Open a file in nvim and enter insert mode. Wait for a while.
 1. Press `<M-j>` to accept the suggested code.
 
-## Install
+## Installation
 
-If you use [lazy.nvim](https://github.com/folke/lazy.nvim),
-just add the following lines to your configuration file.
+### [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
   {
@@ -53,7 +52,7 @@ just add the following lines to your configuration file.
 
 ```
 
-or to setup manually,
+## Custom Configuration Example
 
 ```lua
   {
