@@ -3,7 +3,10 @@ local M = {}
 ---@type fun(msg: string, level: integer|nil, opts: table|nil)
 local notify = nil
 
----comment
+---
+--- setup logger
+---
+--- Can register functions compatible with vim.notify()
 ---@param func fun(msg: string, level: integer|nil, opts: table|nil)
 function M.setup(func)
   notify = func
