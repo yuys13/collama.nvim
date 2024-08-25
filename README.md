@@ -49,7 +49,6 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
       require('collama.preset.example').codellama()
     end,
   },
-
 ```
 
 ## Custom Configuration Example
@@ -89,3 +88,55 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
     end,
   },
 ```
+
+<details>
+<summary>More customization</summary>
+
+### Custom Notification
+
+#### [nvim-notify](https://github.com/rcarriga/nvim-notify)
+
+```lua
+  {
+    'yuys13/collama.nvim',
+    lazy = false,
+    config = function()
+      require('collama.preset.example').codellama()
+      require('collama.logger').setup(require('notify').notify)
+    end,
+  },
+```
+
+![nvim-notify](https://github.com/user-attachments/assets/9307d963-9adb-44e8-9773-34a6b1d1cd1c)
+
+#### [fidget.nvim](https://github.com/j-hui/fidget.nvim)
+
+```lua
+  {
+    'yuys13/collama.nvim',
+    lazy = false,
+    config = function()
+      require('collama.preset.example').codellama()
+      require('collama.logger').setup(require('fidget').notify)
+    end,
+  },
+```
+
+![fidget](https://github.com/user-attachments/assets/51084471-47db-4268-b446-592c02f11f58)
+
+#### vim.notify
+
+```lua
+  {
+    'yuys13/collama.nvim',
+    lazy = false,
+    config = function()
+      require('collama.preset.example').codellama()
+      require('collama.logger').setup(vim.notify)
+    end,
+  },
+```
+
+![vim.notify](https://github.com/user-attachments/assets/ee74aef7-dc48-4a51-9560-740515e8923c)
+
+</details>
