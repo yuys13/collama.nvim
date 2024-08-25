@@ -7,7 +7,7 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
 
 ## Demo
 
-![demo](https://github.com/user-attachments/assets/ce0f8bb6-c79a-48bd-9a8c-c9ed793f4af9)
+![demo](https://github.com/user-attachments/assets/a3182d04-55dd-4303-92b9-fae926a1c12c)
 
 ### Demo Scenario
 
