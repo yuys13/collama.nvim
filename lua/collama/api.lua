@@ -46,8 +46,9 @@ end
 function M.generate(base_url, body, callback)
   local api_url = url.join(base_url, 'generate')
 
-  logger.info('request to ' .. api_url)
-  -- logger.debug('request body = ' .. vim.inspect(body))
+  logger.info 'Generating...'
+  logger.debug('request to ' .. api_url)
+  logger.debug('request body = ' .. vim.inspect(body))
 
   ---@type Job
   local job = require('plenary.curl').post(api_url, {
@@ -59,12 +60,12 @@ function M.generate(base_url, body, callback)
       end
 
       if output.exit ~= 0 or output.status ~= 200 then
-        logger.error 'request error'
+        logger.error 'Generation error'
         logger.debug('output = ' .. vim.inspect(output))
         return
       end
 
-      logger.info 'get response '
+      logger.info 'Generation complete'
       local res = vim.json.decode(output.body)
       ---@cast res CollamaGenerateResponse
       callback(res)

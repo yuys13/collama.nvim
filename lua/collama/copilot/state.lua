@@ -30,7 +30,7 @@ function M.clear()
 
   -- shutdown Job
   if state.job then
-    logger.info 'job:shutdown()'
+    logger.info 'Generation canceled'
     -- job.shutdown() does not stop the curl process.
     -- job.pid is correct for integer because the return value of uv.spawn is an integer.
     vim.uv.kill(state.job.pid --[[@as integer]])

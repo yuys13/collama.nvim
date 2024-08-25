@@ -3,6 +3,8 @@ local M = {}
 ---@type fun(msg: string, level: integer|nil, opts: table|nil)
 local notify = nil
 
+local minimum_level = vim.log.levels.INFO
+
 ---
 --- setup logger
 ---
@@ -12,11 +14,20 @@ function M.setup(func)
   notify = func
 end
 
+---set minimum_level
+---@param level integer see `:h vim.log.levels`
+function M.set_minimum_level(level)
+  minimum_level = level
+end
+
 ---@param msg string Content of the notification to show to the user.
 ---@param level integer|nil One of the values from |vim.log.levels|.
 ---@param opts table|nil Optional parameters. Unused by default.
 function M.log(msg, level, opts)
   if not notify then
+    return
+  end
+  if level < minimum_level then
     return
   end
   notify(msg, level, opts)
