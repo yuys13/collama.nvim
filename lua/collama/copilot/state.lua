@@ -97,9 +97,15 @@ end
 
 ---Set result and show extmark
 ---@param result string
-function M.set_result(result)
+function M.complete_job(result)
   state.result = result
   show_extmark(result)
+  -- shutdown Job
+  if state.job then
+    -- If exit_code is non-zero, plenary.curl outputs an error, so set it to 0.
+    state.job:shutdown(0)
+    state.job = nil
+  end
 end
 
 function M.accept_result()

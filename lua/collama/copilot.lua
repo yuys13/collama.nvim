@@ -67,7 +67,7 @@ function M.request(config)
     if config.fim.tokens.end_of_middle then
       response = response:gsub(config.fim.tokens.end_of_middle .. '$', '')
     end
-    state.set_result(response)
+    state.complete_job(response)
   end)
 
   state.set_job(job)
