@@ -1,28 +1,60 @@
 local M = {}
 
+---@class CollamaGenerateRequestOptions
+---@field num_keep? integer
+---@field seed? integer
+---@field num_predict? integer
+---@field top_k? integer
+---@field top_p? number
+---@field min_p? number
+---@field tfs_z? number
+---@field typical_p? number
+---@field repeat_last_n? integer
+---@field temperature? number
+---@field repeat_penalty? number
+---@field presence_penalty? number
+---@field frequency_penalty? number
+---@field mirostat? integer
+---@field mirostat_tau? number
+---@field mirostat_eta? number
+---@field penalize_newline? boolean
+---@field stop? string[]
+---@field numa? boolean
+---@field num_ctx? integer
+---@field num_batch? integer
+---@field num_gpu? integer
+---@field low_vram? boolean
+---@field f16_kv? boolean
+---@field vocab_only? boolean
+---@field use_mmap? boolean
+---@field use_mlock? boolean
+---@field num_thread? integer
+
 ---@class CollamaGenerateRequest
 ---@field model string the model name
 ---@field prompt string the prompt to generate a response for
----@field image? string[] a list of base64-encoded images (for multimodal models such as `llama`)
+---@field suffix? string the text after the model response
+---@field images? string[] a list of base64-encoded images (for multimodal models such as `llama`)
 ---@field format? string the format to return a response in. Currently the only accepted value is `json`
----@field options? table additional model parameters listed in the documentation for the Modelfile such as `temperature`
+---@field options? CollamaGenerateRequestOptions additional model parameters listed in the documentation for the Modelfile such as `temperature`
+---@field system? string system message to (overrides what is defined in the Modelfile)
 ---@field context? number[] the context parameter returned from a previous request to `/generate`, this can be used to keep a short conversational memory
 ---@field stream? boolean if `false` the response will be returned as a single response object, rather than a stream of object
----@field raw? boolean if `true` no formatting will be applied to the prompt. You may choose to use the `raw` parameter if you are aspecifying a full templated prompt in your request to the API
+---@field raw? boolean if `true` no formatting will be applied to the prompt. You may choose to use the `raw` parameter if you are specifying a full templated prompt in your request to the API
 ---@field keep_alive? string controls how long the model will stay loaded into memory following the request (default: `5m`)
 
 ---@class CollamaGenerateResponse
 ---@field model string the model name
 ---@field created_at string
----@field response string
+---@field response string empty if the response was streamed, if not streamed, this will contain the full response
 ---@field done boolean
----@field context number[]
----@field total_duration number
----@field load_duration number
----@field prompt_eval_count number
----@field prompt_eval_duration number
----@field eval_count number
----@field eval_duration number
+---@field context number[] an encoding of the conversation used in this response, this can be sent in the next request to keep a conversational memory
+---@field total_duration number time spent generating the response
+---@field load_duration number time spent in nanoseconds loading the model
+---@field prompt_eval_count number number of tokens in the prompt
+---@field prompt_eval_duration number time spent in nanoseconds evaluating the prompt
+---@field eval_count number number of tokens in the response
+---@field eval_duration number time in nanoseconds spent generating the response
 
 local logger = require 'collama.logger'
 
