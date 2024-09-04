@@ -35,7 +35,11 @@ function M.clear()
     -- job.pid is correct for integer because the return value of uv.spawn is an integer.
     vim.uv.kill(state.job.pid --[[@as integer]])
     -- If exit_code is non-zero, plenary.curl outputs an error, so set it to 0.
-    state.job:shutdown(0)
+    if not pcall(function()
+      state.job:shutdown(0)
+    end) then
+      logger.error 'job shutdown error'
+    end
     state.job = nil
   end
 
