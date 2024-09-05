@@ -107,7 +107,11 @@ function M.complete_job(result)
   -- shutdown Job
   if state.job then
     -- If exit_code is non-zero, plenary.curl outputs an error, so set it to 0.
-    state.job:shutdown(0)
+    if not pcall(function()
+      state.job:shutdown(0)
+    end) then
+      logger.debug 'job completed and shutdown error'
+    end
     state.job = nil
   end
 end
