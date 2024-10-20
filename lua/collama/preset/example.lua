@@ -19,8 +19,6 @@ local function attach_global(config)
       require('collama.copilot').clear()
     end,
   })
-  -- map accept key
-  vim.keymap.set('i', '<M-j>', require('collama.copilot').accept)
 end
 
 ---

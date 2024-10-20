@@ -34,6 +34,7 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
 1. Install `collama.nvim` using your preferred package manager.
 1. Run `ollama pull codellama:7b-code`.
 1. Add `require('collama.preset.example').codellama()` to your init.lua.
+1. Add `vim.keymap.set('i', '<M-j>', require('collama.copilot').accept)` to your init.lua.
 1. Open a file in nvim and enter insert mode. Wait for a while.
 1. Press `<M-j>` to accept the suggested code.
 
@@ -47,6 +48,8 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
     lazy = false,
     config = function()
       require('collama.preset.example').codellama()
+      -- map accept key
+      vim.keymap.set('i', '<M-j>', require('collama.copilot').accept)
     end,
   },
 ```
@@ -102,6 +105,9 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
     lazy = false,
     config = function()
       require('collama.preset.example').codellama()
+      -- map accept key
+      vim.keymap.set('i', '<M-j>', require('collama.copilot').accept)
+
       require('collama.logger').setup(require('notify').notify)
     end,
   },
@@ -117,6 +123,9 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
     lazy = false,
     config = function()
       require('collama.preset.example').codellama()
+      -- map accept key
+      vim.keymap.set('i', '<M-j>', require('collama.copilot').accept)
+
       require('collama.logger').setup(require('fidget').notify)
     end,
   },
@@ -132,6 +141,9 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
     lazy = false,
     config = function()
       require('collama.preset.example').codellama()
+      -- map accept key
+      vim.keymap.set('i', '<M-j>', require('collama.copilot').accept)
+
       require('collama.logger').setup(vim.notify)
     end,
   },
