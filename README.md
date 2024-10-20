@@ -79,7 +79,7 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
         end,
       })
       -- auto cancel
-      vim.api.nvim_create_autocmd({ 'InsertLeave' }, {
+      vim.api.nvim_create_autocmd({ 'InsertLeave', 'VimLeavePre' }, {
         group = augroup,
         callback = function()
           require('collama.copilot').clear()
