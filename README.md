@@ -25,7 +25,6 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
 ## Requirements
 
 - [Ollama](https://ollama.com)
-- [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
 - curl
 
 ## Quick start

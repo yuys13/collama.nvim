@@ -82,28 +82,33 @@ function M.generate(base_url, body, callback)
   logger.debug('request to ' .. api_url)
   logger.debug('request body = ' .. vim.inspect(body))
 
-  ---@type Job
-  local job = require('plenary.curl').post(api_url, {
-    body = vim.json.encode(body),
-    callback = vim.schedule_wrap(function(output)
-      -- If the job is cancelled, no action is taken.
-      if output.exit == 0 and output.status == nil then
+  local so = vim.system(
+    { 'curl', '-sSL', '--compressed', '-d', vim.json.encode(body), api_url },
+    { text = true },
+    vim.schedule_wrap(function(out)
+      if out.signal ~= 0 then
+        logger.debug('cancelled with signal:' .. out.signal)
         return
       end
 
-      if output.exit ~= 0 or output.status ~= 200 then
+      if out.code ~= 0 then
         logger.error 'Generation error'
-        logger.debug('output = ' .. vim.inspect(output))
+        logger.debug('output = ' .. vim.inspect(out))
         return
+      end
+
+      local ok, res = pcall(vim.json.decode, out.stdout)
+      if not ok then
+        logger.error 'Generation error'
+        logger.debug('output = ' .. vim.inspect(out))
       end
 
       logger.info 'Generation complete'
-      local res = vim.json.decode(output.body)
-      ---@cast res CollamaGenerateResponse
+
       callback(res)
-    end),
-  })
-  return job
+    end)
+  )
+  return so
 end
 
 return M

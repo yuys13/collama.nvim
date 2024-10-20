@@ -1,6 +1,6 @@
 ---@class CollamaState
 ---@field timer uv_timer_t
----@field job Job?
+---@field job vim.SystemObj?
 ---@field bufnr number
 ---@field pos number[]?
 ---@field result string?
@@ -31,15 +31,7 @@ function M.clear()
   -- shutdown Job
   if state.job then
     logger.info 'Generation canceled'
-    -- job.shutdown() does not stop the curl process.
-    -- job.pid is correct for integer because the return value of uv.spawn is an integer.
-    vim.uv.kill(state.job.pid --[[@as integer]])
-    -- If exit_code is non-zero, plenary.curl outputs an error, so set it to 0.
-    if not pcall(function()
-      state.job:shutdown(0)
-    end) then
-      logger.error 'job shutdown error'
-    end
+    state.job:kill(9)
     state.job = nil
   end
 
@@ -80,6 +72,8 @@ function M.get_pos()
   return state.bufnr, state.pos
 end
 
+---set job
+---@param job vim.SystemObj
 function M.set_job(job)
   state.job = job
 end
@@ -104,14 +98,7 @@ end
 function M.complete_job(result)
   state.result = result
   show_extmark(result)
-  -- shutdown Job
   if state.job then
-    -- If exit_code is non-zero, plenary.curl outputs an error, so set it to 0.
-    if not pcall(function()
-      state.job:shutdown(0)
-    end) then
-      logger.debug 'job completed and shutdown error'
-    end
     state.job = nil
   end
 end
