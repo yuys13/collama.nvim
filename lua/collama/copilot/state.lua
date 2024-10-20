@@ -116,28 +116,18 @@ function M.complete_job(result)
   end
 end
 
-function M.accept_result()
-  if not state.result then
-    return
-  end
-  logger.info 'accept'
+---get Fill-In-The-Middle result
+---@return string?
+function M.get_result()
+  return state.result
+end
 
-  local now_pos = vim.api.nvim_win_get_cursor(0)
-  if state.pos[0] == now_pos[0] and state.pos[1] == now_pos[1] then
-    -- insert text at cursor position, and place cursor at end of inserted text.
-    vim.api.nvim_put(vim.split(state.result, '\n'), 'c', true, true)
-  else
-    -- just insert text.
-    vim.api.nvim_buf_set_text(
-      state.bufnr,
-      state.pos[1] - 1,
-      state.pos[2],
-      state.pos[1] - 1,
-      state.pos[2],
-      vim.split(state.result, '\n')
-    )
+function M.is_moved()
+  if state.bufnr ~= vim.fn.bufnr() then
+    return true
   end
-  M.clear()
+  local now_pos = vim.api.nvim_win_get_cursor(0)
+  return state.pos[1] ~= now_pos[1] or state.pos[2] ~= now_pos[2]
 end
 
 return M

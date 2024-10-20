@@ -13,6 +13,7 @@
 ---@field fim CollamaFimConfig
 
 local state = require 'collama.copilot.state'
+local logger = require 'collama.logger'
 
 local M = {}
 
@@ -94,8 +95,24 @@ function M.clear()
   state.clear()
 end
 
+---accept Fill-In-the-Middle resutl
 function M.accept()
-  state.accept_result()
+  local result = state.get_result()
+  if not result then
+    return
+  end
+  logger.info 'accept'
+
+  if not state.is_moved() then
+    -- insert text at cursor position, and place cursor at end of inserted text.
+    vim.api.nvim_put(vim.split(result, '\n'), 'c', true, true)
+  else
+    local bufnr, pos = state.get_pos()
+    -- just insert text.
+    vim.api.nvim_buf_set_text(bufnr, pos[1] - 1, pos[2], pos[1] - 1, pos[2], vim.split(result, '\n'))
+  end
+
+  state.clear()
 end
 
 return M
