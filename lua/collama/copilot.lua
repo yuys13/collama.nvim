@@ -1,33 +1,11 @@
----@class CollamaFimTokens
----@field prefix string special token for FIM such as `<PRE>`
----@field suffix string special token for FIM such as `<SUF>`
----@field middle string special token for FIM such as `<MID>`
----@field end_of_middle string? special token for FIM such as `<EOM>`
-
----@class CollamaFimConfig
----@field model string
----@field tokens CollamaFimTokens
-
 ---@class CollamaConfig
 ---@field base_url string
----@field fim CollamaFimConfig
+---@field model string
 
 local state = require 'collama.copilot.state'
 local logger = require 'collama.logger'
 
 local M = {}
-
-function M.get_default_config()
-  ---@type CollamaConfig
-  local config = {
-    base_url = 'http://localhost:11434/api/',
-    fim = {
-      model = 'codellama:7b-code',
-      tokens = require('collama.preset.tokens').codellama,
-    },
-  }
-  return config
-end
 
 ---get prefix and suffix from buffer
 ---@param bufnr number number of a buffer
@@ -43,31 +21,19 @@ local function get_buffer(bufnr, pos)
   return prefix, suffix
 end
 
----create prompt
----@param prefix string string before cursor
----@param suffix string string after cursor
----@param tokens CollamaFimTokens special tokens for FIM
----@return string prompt
-local function create_prompt(prefix, suffix, tokens)
-  return tokens.prefix .. prefix .. tokens.suffix .. suffix .. tokens.middle
-end
-
 ---request Fill-In-the-Middle
 ---@param config CollamaConfig
 function M.request(config)
   state.set_pos()
   local prefix, suffix = get_buffer(state.get_pos())
-  local prompt = create_prompt(prefix, suffix, config.fim.tokens)
 
   local job = require('collama.api').generate(config.base_url, {
-    prompt = prompt,
-    model = config.fim.model,
+    prompt = prefix,
+    suffix = suffix,
+    model = config.model,
     stream = false,
   }, function(res)
     local response = res.response
-    if config.fim.tokens.end_of_middle then
-      response = response:gsub(config.fim.tokens.end_of_middle .. '$', '')
-    end
     state.complete_job(response)
   end)
 
