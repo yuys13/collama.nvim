@@ -95,7 +95,7 @@ function M.clear()
   state.clear()
 end
 
----accept Fill-In-the-Middle resutl
+---accept Fill-In-the-Middle result
 function M.accept()
   local result = state.get_result()
   if not result then
