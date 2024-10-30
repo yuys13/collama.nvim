@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  format-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up LuaJIT
+        uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: "luajit"
+
+      - name: Install dependencies
+        run: luarocks install --only-deps
+
+      - name: Run Stylua
+        run: stylua --check .
+
+      - name: Run lua-language-server
+        run: |
+          sudo apt-get install -y lua-language-server
+          lua-language-server --check .
