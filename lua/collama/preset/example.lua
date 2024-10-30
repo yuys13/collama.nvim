@@ -1,6 +1,7 @@
 ---@class CollamaExampleSetupConfig
----@field base_url string?
----@field model string
+---@field base_url string? default: 'http://localhost:11434/api/'
+---@field model string the model name. ex) 'codellama:code'
+---@field debounce_time integer? default: 1000
 
 local M = {}
 
@@ -12,6 +13,7 @@ function M.setup(config)
     base_url = config.base_url or 'http://localhost:11434/api/',
     model = config.model,
   }
+  local debounce_time = config.debounce_time or 1000
 
   local augroup = vim.api.nvim_create_augroup('collama_preset_example_group', { clear = true })
 
@@ -19,7 +21,7 @@ function M.setup(config)
   vim.api.nvim_create_autocmd({ 'InsertEnter', 'CursorMovedI', 'TextChangedI' }, {
     group = augroup,
     callback = function()
-      require('collama.copilot').debounced_request(cc, 1000)
+      require('collama.copilot').debounced_request(cc, debounce_time)
     end,
   })
   -- auto cancel
