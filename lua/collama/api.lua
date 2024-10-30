@@ -108,7 +108,7 @@ function M.generate(base_url, body, callback)
       callback(res)
     end)
   )
-  return so
+ return so
 end
 
 return M
