@@ -5,6 +5,10 @@
 local state = require 'collama.copilot.state'
 local logger = require 'collama.logger'
 
+vim.api.nvim_set_hl(0, 'CollamaSuggest', { link = 'Comment', default = true })
+
+local ns_id = vim.api.nvim_create_namespace 'collama'
+
 local M = {}
 
 ---get prefix and suffix from buffer
@@ -21,6 +25,35 @@ local function get_buffer(bufnr, pos)
   return prefix, suffix
 end
 
+---show extmark
+---@param text string
+local function show_extmark(text)
+  local bufnr, pos = state.get_pos()
+  ---@type vim.api.keyset.set_extmark
+  local opts = {}
+
+  local lines = vim.split(text, '\n')
+  local virt_text = table.remove(lines, 1)
+  opts.virt_text = { { virt_text, 'CollamaSuggest' } }
+  opts.virt_text_pos = 'overlay'
+
+  opts.virt_lines = {}
+  for _, value in pairs(lines) do
+    table.insert(opts.virt_lines, { { value, 'CollamaSuggest' } })
+  end
+
+  local extmark_id = vim.api.nvim_buf_set_extmark(bufnr, ns_id, pos[1] - 1, pos[2], opts)
+  state.set_extmark_id(extmark_id)
+end
+
+---Set result and show extmark
+---@param result string
+local function complete_job(result)
+  state.set_result(result)
+  show_extmark(result)
+  state.set_job(nil)
+end
+
 ---request Fill-In-the-Middle
 ---@param config CollamaConfig
 function M.request(config)
@@ -34,7 +67,7 @@ function M.request(config)
     stream = false,
   }, function(res)
     local response = res.response
-    state.complete_job(response)
+    complete_job(response)
   end)
 
   state.set_job(job)

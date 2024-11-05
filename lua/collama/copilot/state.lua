@@ -8,8 +8,6 @@
 
 local logger = require 'collama.logger'
 
-vim.api.nvim_set_hl(0, 'CollamaSuggest', { link = 'Comment', default = true })
-
 local ns_id = vim.api.nvim_create_namespace 'collama'
 
 local M = {}
@@ -73,40 +71,27 @@ function M.get_pos()
 end
 
 ---set job
----@param job vim.SystemObj
+---@param job vim.SystemObj?
 function M.set_job(job)
   state.job = job
 end
 
----show extmark
----@param text string
-local function show_extmark(text)
-  local lines = vim.split(text, '\n')
-  local virt_text = table.remove(lines, 1)
-  local opts = {}
-  opts.virt_text = { { virt_text, 'CollamaSuggest' } }
-  opts.virt_text_pos = 'overlay'
-  opts.virt_lines = {}
-  for _, value in pairs(lines) do
-    table.insert(opts.virt_lines, { { value, 'CollamaSuggest' } })
-  end
-  state.extmark_id = vim.api.nvim_buf_set_extmark(state.bufnr, ns_id, state.pos[1] - 1, state.pos[2], opts)
-end
-
----Set result and show extmark
+---set Fill-In-The-Middle result
 ---@param result string
-function M.complete_job(result)
+function M.set_result(result)
   state.result = result
-  show_extmark(result)
-  if state.job then
-    state.job = nil
-  end
 end
 
 ---get Fill-In-The-Middle result
 ---@return string?
 function M.get_result()
   return state.result
+end
+
+---set extmark_id
+---@param extmark_id number
+function M.set_extmark_id(extmark_id)
+  state.extmark_id = extmark_id
 end
 
 function M.is_moved()
