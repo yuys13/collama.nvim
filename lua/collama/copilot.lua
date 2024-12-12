@@ -35,6 +35,15 @@ local function show_extmark(text)
   local lines = vim.split(text, '\n')
   local virt_text = table.remove(lines, 1)
   opts.virt_text = { { virt_text, 'CollamaSuggest' } }
+
+  if #lines == 0 then
+    -- if generated result is a single line, display 'inline'
+    opts.virt_text_pos = 'inline'
+    local extmark_id = vim.api.nvim_buf_set_extmark(bufnr, ns_id, pos[1] - 1, pos[2], opts)
+    state.set_extmark_id(extmark_id)
+    return
+  end
+
   opts.virt_text_pos = 'overlay'
 
   opts.virt_lines = {}
@@ -104,7 +113,7 @@ function M.accept()
 
   if not state.is_moved() then
     -- insert text at cursor position, and place cursor at end of inserted text.
-    vim.api.nvim_put(vim.split(result, '\n'), 'c', true, true)
+    vim.api.nvim_put(vim.split(result, '\n'), 'c', false, true)
   else
     local bufnr, pos = state.get_pos()
     -- just insert text.
