@@ -1,6 +1,6 @@
 local M = {}
 
----@type fun(msg: string, level: integer|nil, opts: table|nil)
+---@type fun(msg: string, level: integer|nil, opts: table|nil)|nil
 local notify = nil
 
 local minimum_level = vim.log.levels.INFO
@@ -9,7 +9,7 @@ local minimum_level = vim.log.levels.INFO
 --- setup logger
 ---
 --- Can register functions compatible with vim.notify()
----@param func fun(msg: string, level: integer|nil, opts: table|nil)
+---@param func fun(msg: string, level: integer|nil, opts: table|nil)|nil
 function M.setup(func)
   notify = func
 end

@@ -28,9 +28,37 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
       - name: Run selene
         uses: NTBBloodbath/selene-action@v1.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --display-style=quiet .
           # version: 0.12.1
+
+  test:
+    strategy:
+      matrix:
+        os: ['ubuntu-latest', 'macos-latest']
+        version: ['stable', 'nightly']
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Check out deps
+        uses: actions/checkout@v4
+        with:
+          repository: nvim-lua/plenary.nvim
+          path: .dependencies/plenary.nvim
+
+      - name: Set up Neovim
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: ${{ matrix.version }}
+
+      - name: Run test
+        run: nvim --headless -u test/init.vim -c "PlenaryBustedDirectory test/"
