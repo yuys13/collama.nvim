@@ -104,7 +104,7 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
       -- map accept key
       vim.keymap.set('i', '<M-j>', require('collama.copilot').accept)
 
-      require('collama.logger').setup(require('notify').notify)
+      require('collama.logger').notify = require('notify').notify
     end,
   },
 ```
@@ -122,7 +122,7 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
       -- map accept key
       vim.keymap.set('i', '<M-j>', require('collama.copilot').accept)
 
-      require('collama.logger').setup(require('fidget').notify)
+      require('collama.logger').notify = require('fidget').notify
     end,
   },
 ```
@@ -140,7 +140,7 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
       -- map accept key
       vim.keymap.set('i', '<M-j>', require('collama.copilot').accept)
 
-      require('collama.logger').setup(vim.notify)
+      require('collama.logger').notify = vim.notify
     end,
   },
 ```

@@ -1,36 +1,42 @@
 local M = {}
 
 ---@type fun(msg: string, level: integer|nil, opts: table|nil)|nil
-local notify = nil
+--- Can register functions compatible with vim.notify()
+M.notify = nil
 
-local minimum_level = vim.log.levels.INFO
+---@type integer Minimum level of messages to log. Logs below this level will be ignored.
+---Default is vim.log.levels.INFO.
+---See `:h vim.log.levels`
+M.level = vim.log.levels.INFO
 
 ---
 --- setup logger
 ---
 --- Can register functions compatible with vim.notify()
 ---@param func fun(msg: string, level: integer|nil, opts: table|nil)|nil
+---@deprecated Use require('collama.logger').notify directly.
 function M.setup(func)
-  notify = func
+  M.notify = func
 end
 
 ---set minimum_level
 ---@param level integer see `:h vim.log.levels`
-function M.set_minimum_level(level)
-  minimum_level = level
+---@deprecated Use require('collama.logger').level directly.
+function M.set_level(level)
+  M.level = level
 end
 
 ---@param msg string Content of the notification to show to the user.
 ---@param level integer|nil One of the values from |vim.log.levels|.
 ---@param opts table|nil Optional parameters. Unused by default.
 function M.log(msg, level, opts)
-  if not notify then
+  if not M.notify then
     return
   end
-  if level < minimum_level then
+  if level < M.level then
     return
   end
-  notify(msg, level, opts)
+  M.notify(msg, level, opts)
 end
 
 function M.error(msg)
