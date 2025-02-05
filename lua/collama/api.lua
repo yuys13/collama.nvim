@@ -85,6 +85,7 @@ function M.generate(base_url, body, callback)
   local so = vim.system(
     { 'curl', '-sSL', '--compressed', '-d', vim.json.encode(body), api_url },
     { text = true },
+    ---@param out vim.SystemCompleted
     vim.schedule_wrap(function(out)
       if out.signal ~= 0 then
         logger.debug('cancelled with signal:' .. out.signal)
