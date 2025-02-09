@@ -5,7 +5,7 @@ local match = require 'luassert.match'
 
 describe('generate', function()
   it('request with curl', function()
-    local mock = spy.on(vim, 'system')
+    local mock = stub.new(vim, 'system')
 
     local request_body = { model = 'awesome_model', prompt = 'The quick brown fox', suffix = 'lazy dog.' }
     api.generate('url', request_body, function(_) end)
