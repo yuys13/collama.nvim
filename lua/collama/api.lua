@@ -91,6 +91,7 @@ function M.generate(base_url, body, callback)
   logger.debug('request to ' .. api_url)
   logger.debug('request body = ' .. vim.inspect(body))
 
+  body.stream = false
   local so = vim.system(
     { 'curl', '-sSL', '--compressed', '-d', vim.json.encode(body), api_url },
     { text = true },
