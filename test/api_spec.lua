@@ -29,6 +29,7 @@ describe('generate', function()
   it('request with curl', function()
     local mock = stub.new(vim, 'system')
 
+    ---@type CollamaGenerateRequest
     local request_body = { model = 'awesome_model', prompt = 'The quick brown fox', suffix = 'lazy dog.' }
     api.generate('url', request_body, function(_) end)
     vim.wait(1000, function()
@@ -36,6 +37,7 @@ describe('generate', function()
       return ret
     end)
 
+    request_body.stream = false
     assert.spy(mock).was.called_with({
       'curl',
       '-sSL',
@@ -48,6 +50,30 @@ describe('generate', function()
     mock:revert()
   end)
 
+  it('request stream false, even if specified true', function()
+    local mock = stub.new(vim, 'system')
+
+    ---@type CollamaGenerateRequest
+    local request_body =
+      { model = 'awesome_model', prompt = 'The quick brown fox', suffix = 'lazy dog.', stream = true }
+    api.generate('url', request_body, function(_) end)
+    vim.wait(1000, function()
+      local ret, _ = mock:called()
+      return ret
+    end)
+
+    request_body.stream = false
+    assert.spy(mock).was.called_with({
+      'curl',
+      '-sSL',
+      '--compressed',
+      '-d',
+      vim.json.encode(request_body),
+      'url/generate',
+    }, { text = true }, match._)
+
+    mock:revert()
+  end)
   it('call callback', function()
     local mock = stub.new(vim, 'system')
     mock.invokes(function(_, _, on_exit)

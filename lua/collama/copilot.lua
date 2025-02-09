@@ -76,7 +76,6 @@ function M.request(config)
     prompt = prefix,
     suffix = suffix,
     model = config.model,
-    stream = false,
   }, function(res)
     local response = res.response
     complete_job(response)
