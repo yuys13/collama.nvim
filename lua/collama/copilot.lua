@@ -1,5 +1,5 @@
 ---@class CollamaConfig
----@field base_url string
+---@field base_url string?
 ---@field model string
 
 local state = require 'collama.copilot.state'
@@ -69,7 +69,10 @@ function M.request(config)
   state.set_pos()
   local prefix, suffix = get_buffer(state.get_pos())
 
-  local job = require('collama.api').generate(config.base_url, {
+  local api = require 'collama.api'
+  local base_url = config.base_url or api.get_base_url()
+
+  local job = api.generate(base_url, {
     prompt = prefix,
     suffix = suffix,
     model = config.model,
