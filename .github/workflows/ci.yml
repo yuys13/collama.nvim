@@ -61,4 +61,4 @@ jobs:
           version: ${{ matrix.version }}
 
       - name: Run test
-        run: nvim --headless -u test/init.vim -c "PlenaryBustedDirectory test/"
+        run: nvim --headless -u test/minimal_init.lua -c "PlenaryBustedDirectory test/"
