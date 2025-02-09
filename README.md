@@ -62,7 +62,6 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
     config = function()
       ---@type CollamaConfig
       local config = {
-        base_url = 'http://localhost:11434/api/',
         model = 'qwen2.5-coder:7b',
       }
 
