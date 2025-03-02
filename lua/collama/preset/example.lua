@@ -1,7 +1,7 @@
 ---@class CollamaExampleSetupConfig
 ---@field base_url string? base_url like `http://localhost:11434/api/`. If nil is specified, fall back to `http://${OLLAMA_HOST}/api/`
 ---@field model string the model name. ex) `qwen2.5-coder:7b`
----@field debounce_time integer? default: 1000
+---@field debounce_time integer? debounce time in milliseconds. default: 1000
 
 local M = {}
 
