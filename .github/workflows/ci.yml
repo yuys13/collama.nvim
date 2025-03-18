@@ -14,10 +14,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Run Stylua
-        uses: JohnnyMorganz/stylua-action@v4
+        uses: JohnnyMorganz/stylua-action@b6661824b86c9c33121bed87a778b660ba90cf77 # v4.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
@@ -27,10 +27,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Run selene
-        uses: NTBBloodbath/selene-action@v1.0.0
+        uses: NTBBloodbath/selene-action@23ef05dd5c4d687f4d3c939f76a1c342baf454aa # v1.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --display-style=quiet .
@@ -46,16 +46,16 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Check out deps
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: nvim-lua/plenary.nvim
           path: .dependencies/plenary.nvim
 
       - name: Set up Neovim
-        uses: rhysd/action-setup-vim@v1
+        uses: rhysd/action-setup-vim@47493751bcbf7a4b12bc9e0c2ddce7aa1e3b69e5 # v1.4.1
         with:
           neovim: true
           version: ${{ matrix.version }}
