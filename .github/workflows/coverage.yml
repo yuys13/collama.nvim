@@ -1,0 +1,43 @@
+name: coverage
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Neovim
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: stable
+
+      - name: Setup lua
+        uses: leafo/gh-actions-lua@v11
+        with:
+          luaVersion: luajit-2.1.0-beta3
+
+      - name: Setup luarocks
+        uses: leafo/gh-actions-luarocks@v5
+
+      - name: Setup lua tools
+        shell: bash
+        run: |
+          luarocks install luacov
+          luarocks install vusted
+
+      - name: Setup vusted
+        run: luarocks install vusted
+
+      - name: test with coverage
+        run: vusted --coverage test
