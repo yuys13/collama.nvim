@@ -1,5 +1,11 @@
 # collama.nvim
 
+<!-- markdownlint-disable MD013  MD033 -->
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/22b0e05a-2fac-4d0b-8efb-9b08ff6dc0e9" width=30% alt="collama">
+</p>
+<!-- markdownlint-enable MD033 -->
+
 Note: This repository is still a work in progress.
 The interface is subject to change without notice.
 
@@ -87,8 +93,10 @@ collama.nvim is a Neovim plugin that leverages Ollama to provide source code com
   },
 ```
 
+<!-- markdownlint-disable MD033 -->
 <details>
 <summary>More customization</summary>
+<!-- markdownlint-enable MD033 -->
 
 ### Custom Notification
 
