@@ -112,6 +112,7 @@ function M.generate(base_url, body, callback)
       if not ok then
         logger.error 'Generation error'
         logger.debug('output = ' .. vim.inspect(out))
+        return
       end
 
       logger.info 'Generation complete'

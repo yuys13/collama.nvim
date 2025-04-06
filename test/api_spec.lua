@@ -74,6 +74,7 @@ describe('generate', function()
 
     mock:revert()
   end)
+
   it('call callback', function()
     local mock = stub.new(vim, 'system')
     mock.invokes(function(_, _, on_exit)
@@ -188,7 +189,7 @@ describe('generate', function()
       return ret
     end)
 
-    assert.spy(callback).was.called(1)
+    assert.spy(callback).was.called(0)
     assert.spy(log).was.called_with 'Generation error'
 
     mock:revert()
