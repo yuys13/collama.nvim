@@ -60,6 +60,10 @@ end
 ---Set result and show extmark
 ---@param result string
 local function complete_job(result)
+  if state.get_job() == nil then
+    logger.info 'job is already canceled'
+    return
+  end
   logger.info(string.format('Generation completed [%d]', state.get_job().pid))
   state.set_result(result)
   show_extmark(result)
