@@ -28,7 +28,7 @@ function M.clear()
 
   -- shutdown Job
   if state.job then
-    logger.info 'Generation canceled'
+    logger.info(string.format('Generation canceled [%d]', state.job.pid))
     state.job:kill(9)
     state.job = nil
   end
@@ -43,6 +43,10 @@ function M.clear()
   state.bufnr = 0
   state.pos = nil
   state.result = nil
+end
+
+function M.get_job()
+  return state.job
 end
 
 ---

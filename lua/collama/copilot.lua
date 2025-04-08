@@ -41,6 +41,7 @@ local function show_extmark(text)
     opts.virt_text_pos = 'inline'
     local extmark_id = vim.api.nvim_buf_set_extmark(bufnr, ns_id, pos[1] - 1, pos[2], opts)
     state.set_extmark_id(extmark_id)
+    logger.debug 'show_extmark end (single line)'
     return
   end
 
@@ -53,11 +54,13 @@ local function show_extmark(text)
 
   local extmark_id = vim.api.nvim_buf_set_extmark(bufnr, ns_id, pos[1] - 1, pos[2], opts)
   state.set_extmark_id(extmark_id)
+  logger.debug 'show_extmark end (multi line)'
 end
 
 ---Set result and show extmark
 ---@param result string
 local function complete_job(result)
+  logger.info(string.format('Generation completed [%d]', state.get_job().pid))
   state.set_result(result)
   show_extmark(result)
   state.set_job(nil)
@@ -80,6 +83,8 @@ function M.request(config)
     local response = res.response
     complete_job(response)
   end)
+
+  logger.info(string.format('Generating...[%d]', job.pid))
 
   state.set_job(job)
 end
