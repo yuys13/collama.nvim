@@ -87,7 +87,6 @@ end
 function M.generate(base_url, body, callback)
   local api_url = url.join(base_url, 'generate')
 
-  logger.info 'Generating...'
   logger.debug('request to ' .. api_url)
   logger.debug('request body = ' .. vim.inspect(body))
 
@@ -114,8 +113,6 @@ function M.generate(base_url, body, callback)
         logger.debug('output = ' .. vim.inspect(out))
         return
       end
-
-      logger.info 'Generation complete'
 
       callback(res)
     end)
