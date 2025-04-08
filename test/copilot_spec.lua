@@ -7,7 +7,7 @@ describe('create request', function()
   local backup_ollama_host = vim.env.OLLAMA_HOST
 
   before_each(function()
-    mock = stub.new(vim, 'system').returns { pid = 123 }
+    mock = stub.new(vim, 'system').returns { pid = 123 } -- Mock vim.system to simulate a running process with a specific pid
   end)
 
   after_each(function()
