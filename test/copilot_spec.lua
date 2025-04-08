@@ -7,7 +7,7 @@ describe('create request', function()
   local backup_ollama_host = vim.env.OLLAMA_HOST
 
   before_each(function()
-    mock = stub.new(vim, 'system')
+    mock = stub.new(vim, 'system').returns { pid = 123 }
   end)
 
   after_each(function()
@@ -16,7 +16,6 @@ describe('create request', function()
   end)
 
   it('request() default base_url', function()
-    mock = stub.new(vim, 'system')
     ---@type CollamaConfig
     local test_config = { model = 'awesome_model' }
     vim.env.OLLAMA_HOST = nil
