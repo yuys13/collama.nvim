@@ -28,6 +28,11 @@ end
 ---show extmark
 ---@param text string
 local function show_extmark(text)
+  if text == nil then
+    logger.debug 'show_extmark end (text is nil)'
+    return
+  end
+
   local bufnr, pos = state.get_pos()
   ---@type vim.api.keyset.set_extmark
   local opts = {}
