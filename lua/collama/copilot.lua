@@ -100,6 +100,7 @@ end
 
 ---request Fill-In-the-Middle with debounce
 ---@param config CollamaConfig
+---@param debounce_time integer
 function M.debounced_request(config, debounce_time)
   state.clear()
   -- request only normal buffer
