@@ -2,7 +2,7 @@
 ---@field base_url string?
 ---@field model string
 
-local state = require 'collama.copilot.state'.new()
+local state = require('collama.copilot.state').new()
 local logger = require 'collama.logger'
 
 vim.api.nvim_set_hl(0, 'CollamaSuggest', { link = 'Comment', default = true })
