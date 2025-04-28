@@ -2,7 +2,7 @@
 ---@field base_url string?
 ---@field model string
 
-local state = require 'collama.copilot.state'
+local state = require 'collama.copilot.state'.new()
 local logger = require 'collama.logger'
 
 vim.api.nvim_set_hl(0, 'CollamaSuggest', { link = 'Comment', default = true })
@@ -33,7 +33,7 @@ local function show_extmark(text)
     return
   end
 
-  local bufnr, pos = state.get_pos()
+  local bufnr, pos = state:get_pos()
   ---@type vim.api.keyset.set_extmark
   local opts = {}
 
@@ -45,7 +45,7 @@ local function show_extmark(text)
     -- if generated result is a single line, display 'inline'
     opts.virt_text_pos = 'inline'
     local extmark_id = vim.api.nvim_buf_set_extmark(bufnr, ns_id, pos[1] - 1, pos[2], opts)
-    state.set_extmark_id(extmark_id)
+    state:set_extmark_id(extmark_id)
     logger.debug 'show_extmark end (single line)'
     return
   end
@@ -58,28 +58,28 @@ local function show_extmark(text)
   end
 
   local extmark_id = vim.api.nvim_buf_set_extmark(bufnr, ns_id, pos[1] - 1, pos[2], opts)
-  state.set_extmark_id(extmark_id)
+  state:set_extmark_id(extmark_id)
   logger.debug 'show_extmark end (multi line)'
 end
 
 ---Set result and show extmark
 ---@param result string
 local function complete_job(result)
-  if state.get_job() == nil then
+  if state:get_job() == nil then
     logger.info 'job is already canceled'
     return
   end
-  logger.info(string.format('Generation completed [%d]', state.get_job().pid))
-  state.set_result(result)
+  logger.info(string.format('Generation completed [%d]', state:get_job().pid))
+  state:set_result(result)
   show_extmark(result)
-  state.set_job(nil)
+  state:set_job(nil)
 end
 
 ---request Fill-In-the-Middle
 ---@param config CollamaConfig
 function M.request(config)
-  state.set_pos()
-  local prefix, suffix = get_buffer(state.get_pos())
+  state:set_pos()
+  local prefix, suffix = get_buffer(state:get_pos())
 
   local api = require 'collama.api'
   local base_url = config.base_url or api.get_base_url()
@@ -95,19 +95,19 @@ function M.request(config)
 
   logger.info(string.format('Generating...[%d]', job.pid))
 
-  state.set_job(job)
+  state:set_job(job)
 end
 
 ---request Fill-In-the-Middle with debounce
 ---@param config CollamaConfig
 ---@param debounce_time integer
 function M.debounced_request(config, debounce_time)
-  state.clear()
+  state:clear()
   -- request only normal buffer
   if vim.o.buftype ~= '' then
     return
   end
-  state.timer_start(
+  state:timer_start(
     debounce_time,
     0,
     vim.schedule_wrap(function()
@@ -117,27 +117,27 @@ function M.debounced_request(config, debounce_time)
 end
 
 function M.clear()
-  state.clear()
+  state:clear()
 end
 
 ---accept Fill-In-the-Middle result
 function M.accept()
-  local result = state.get_result()
+  local result = state:get_result()
   if not result then
     return
   end
   logger.info 'accept'
 
-  if not state.is_moved() then
+  if not state:is_moved() then
     -- insert text at cursor position, and place cursor at end of inserted text.
     vim.api.nvim_put(vim.split(result, '\n'), 'c', false, true)
   else
-    local bufnr, pos = state.get_pos()
+    local bufnr, pos = state:get_pos()
     -- just insert text.
     vim.api.nvim_buf_set_text(bufnr, pos[1] - 1, pos[2], pos[1] - 1, pos[2], vim.split(result, '\n'))
   end
 
-  state.clear()
+  state:clear()
 end
 
 return M
