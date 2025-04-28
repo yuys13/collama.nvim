@@ -1,3 +1,7 @@
+local logger = require 'collama.logger'
+
+local ns_id = vim.api.nvim_create_namespace 'collama'
+
 ---@class CollamaState
 ---@field timer uv_timer_t
 ---@field job vim.SystemObj?
@@ -5,48 +9,45 @@
 ---@field pos number[]?
 ---@field result string?
 ---@field extmark_id number?
+local CollamaState = {}
 
-local logger = require 'collama.logger'
+---@return CollamaState
+function CollamaState.new()
+  local obj = setmetatable({}, { __index = CollamaState })
+  obj.timer = vim.uv.new_timer()
+  obj.job = nil
+  obj.bufnr = 0
+  obj.pos = nil
+  obj.result = nil
+  obj.extmark_id = nil
+  return obj
+end
 
-local ns_id = vim.api.nvim_create_namespace 'collama'
-
-local M = {}
-
----@type CollamaState
-local state = {
-  timer = vim.uv.new_timer(),
-  job = nil,
-  bufnr = 0,
-  pos = nil,
-  result = nil,
-  extmark_id = nil,
-}
-
-function M.clear()
+function CollamaState:clear()
   -- stop timer
-  state.timer:stop()
+  self.timer:stop()
 
   -- shutdown Job
-  if state.job then
-    logger.info(string.format('Generation canceled [%d]', state.job.pid))
-    state.job:kill(9)
-    state.job = nil
+  if self.job then
+    logger.info(string.format('Generation canceled [%d]', self.job.pid))
+    self.job:kill(9)
+    self.job = nil
   end
 
   -- clear extmark
-  if state.extmark_id then
-    vim.api.nvim_buf_del_extmark(state.bufnr, ns_id, state.extmark_id)
-    state.extmark_id = nil
+  if self.extmark_id then
+    vim.api.nvim_buf_del_extmark(self.bufnr, ns_id, self.extmark_id)
+    self.extmark_id = nil
   end
 
   -- clear other state
-  state.bufnr = 0
-  state.pos = nil
-  state.result = nil
+  self.bufnr = 0
+  self.pos = nil
+  self.result = nil
 end
 
-function M.get_job()
-  return state.job
+function CollamaState:get_job()
+  return self.job
 end
 
 ---
@@ -60,50 +61,50 @@ end
 ---@param repeat_n integer
 ---@param callback fun()
 ---@return 0|nil success, string? err_name, string? err_msg
-function M.timer_start(timeout, repeat_n, callback)
-  return state.timer:start(timeout, repeat_n, callback)
+function CollamaState:timer_start(timeout, repeat_n, callback)
+  return self.timer:start(timeout, repeat_n, callback)
 end
 
 ---Set requested position
-function M.set_pos()
-  state.bufnr = vim.fn.bufnr()
-  state.pos = vim.api.nvim_win_get_cursor(0)
+function CollamaState:set_pos()
+  self.bufnr = vim.fn.bufnr()
+  self.pos = vim.api.nvim_win_get_cursor(0)
 end
 
-function M.get_pos()
-  return state.bufnr, state.pos
+function CollamaState:get_pos()
+  return self.bufnr, self.pos
 end
 
----set job
+---Set job
 ---@param job vim.SystemObj?
-function M.set_job(job)
-  state.job = job
+function CollamaState:set_job(job)
+  self.job = job
 end
 
----set Fill-In-The-Middle result
+---Set Fill-In-The-Middle result
 ---@param result string
-function M.set_result(result)
-  state.result = result
+function CollamaState:set_result(result)
+  self.result = result
 end
 
----get Fill-In-The-Middle result
+---Get Fill-In-The-Middle result
 ---@return string?
-function M.get_result()
-  return state.result
+function CollamaState:get_result()
+  return self.result
 end
 
----set extmark_id
+---Set extmark_id
 ---@param extmark_id number
-function M.set_extmark_id(extmark_id)
-  state.extmark_id = extmark_id
+function CollamaState:set_extmark_id(extmark_id)
+  self.extmark_id = extmark_id
 end
 
-function M.is_moved()
-  if state.bufnr ~= vim.fn.bufnr() then
+function CollamaState:is_moved()
+  if self.bufnr ~= vim.fn.bufnr() then
     return true
   end
   local now_pos = vim.api.nvim_win_get_cursor(0)
-  return state.pos[1] ~= now_pos[1] or state.pos[2] ~= now_pos[2]
+  return self.pos[1] ~= now_pos[1] or self.pos[2] ~= now_pos[2]
 end
 
-return M
+return CollamaState
