@@ -1,5 +1,7 @@
 # collama.nvim
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/yuys13/collama.nvim)
+
 <!-- markdownlint-disable MD013  MD033 -->
 <p align="center">
   <img src="https://github.com/user-attachments/assets/22b0e05a-2fac-4d0b-8efb-9b08ff6dc0e9" width=30% alt="collama">
