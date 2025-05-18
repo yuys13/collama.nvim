@@ -1,0 +1,50 @@
+name: coverage
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Neovim
+        uses: rhysd/action-setup-vim@8e931b9954b19d4203d5caa5ff5521f3bc21dcc7 # v1.4.2
+        with:
+          neovim: true
+          version: stable
+
+      - name: Setup lua
+        uses: leafo/gh-actions-lua@8aace3457a2fcf3f3c4e9007ecc6b869ff6d74d6 # v11.0.0
+        with:
+          luaVersion: luajit-2.1.0-beta3
+
+      - name: Setup luarocks
+        uses: leafo/gh-actions-luarocks@4c082a5fad45388feaeb0798dbd82dbd7dc65bca # v5.0.0
+
+      - name: Setup lua tools
+        shell: bash
+        run: |
+          luarocks install vusted
+          luarocks install luacov
+          luarocks install luacov-cobertura
+
+      - name: Test with coverage
+        run: vusted --coverage test
+
+      - name: Convert coverage file
+        run: luacov-cobertura -o coverage.xml
+
+      - name: Run octocov
+        uses: k1LoW/octocov-action@73d561f65d59e66899ed5c87e4621a913b5d5c20 # v1.5.0
