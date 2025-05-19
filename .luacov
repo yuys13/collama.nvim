@@ -3,7 +3,9 @@ return {
     'lua/collama%/.+$',
   },
   modules = {
-    ['collama.*'] = 'lua/',
+    ['collama.*'] = 'lua',
+    ['collama.*.*'] = 'lua',
   },
+  includeuntestedfiles = true,
 }
 -- vim: ft=lua
