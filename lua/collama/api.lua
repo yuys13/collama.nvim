@@ -23,6 +23,7 @@ local M = {}
 ---@field num_ctx? integer
 ---@field num_batch? integer
 ---@field num_gpu? integer
+---@field main_gpu? integer
 ---@field low_vram? boolean
 ---@field f16_kv? boolean
 ---@field vocab_only? boolean
@@ -34,12 +35,14 @@ local M = {}
 ---@field model string the model name
 ---@field prompt string the prompt to generate a response for
 ---@field suffix? string the text after the model response
----@field images? string[] a list of base64-encoded images (for multimodal models such as `llama`)
----@field format? string the format to return a response in. Currently the only accepted value is `json`
+---@field images? string[] a list of base64-encoded images (for multimodal models such as `llava`)
+---@field think? boolean for thinking models, should the model think before responding?
+---@field format? string|table the format to return a response in. Format can be `json` or a JSON schema
 ---@field options? CollamaGenerateRequestOptions additional model parameters listed in the documentation for the Modelfile such as `temperature`
 ---@field system? string system message to (overrides what is defined in the Modelfile)
----@field context? number[] the context parameter returned from a previous request to `/generate`, this can be used to keep a short conversational memory
----@field stream? boolean if `false` the response will be returned as a single response object, rather than a stream of object
+---@field template? string the prompt template to use (overrides what is defined in the Modelfile)
+---@field context? number[] the context parameter returned from a previous request to `/generate`, this can be used to keep a short conversational memory (deprecated)
+---@field stream? boolean if `false` the response will be returned as a single response object, rather than a stream of objects
 ---@field raw? boolean if `true` no formatting will be applied to the prompt. You may choose to use the `raw` parameter if you are specifying a full templated prompt in your request to the API
 ---@field keep_alive? string controls how long the model will stay loaded into memory following the request (default: `5m`)
 
@@ -48,8 +51,9 @@ local M = {}
 ---@field created_at string
 ---@field response string empty if the response was streamed, if not streamed, this will contain the full response
 ---@field done boolean
----@field context number[] an encoding of the conversation used in this response, this can be sent in the next request to keep a conversational memory
----@field total_duration number time spent generating the response
+---@field done_reason? string the reason generation stopped (e.g. 'stop', 'unload')
+---@field context? number[] an encoding of the conversation used in this response, this can be sent in the next request to keep a conversational memory (may be omitted if `raw` is true)
+---@field total_duration number time spent generating the response (nanoseconds)
 ---@field load_duration number time spent in nanoseconds loading the model
 ---@field prompt_eval_count number number of tokens in the prompt
 ---@field prompt_eval_duration number time spent in nanoseconds evaluating the prompt
