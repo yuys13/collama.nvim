@@ -32,6 +32,8 @@ jobs:
 
       - name: Setup luarocks
         uses: leafo/gh-actions-luarocks@4c082a5fad45388feaeb0798dbd82dbd7dc65bca # v5.0.0
+        with:
+          luarocksVersion: "3.12.0"
 
       - name: Setup lua tools
         shell: bash
