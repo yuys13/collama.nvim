@@ -3,6 +3,8 @@ coverage:
   if: true
 testExecutionTime:
   if: true
+  steps:
+    - Test with coverage
 diff:
   datastores:
     - artifact://${GITHUB_REPOSITORY}
