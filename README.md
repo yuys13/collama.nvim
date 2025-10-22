@@ -1,5 +1,7 @@
 # collama.nvim
 
+ci test
+
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/yuys13/collama.nvim)
 
 <!-- markdownlint-disable MD013  MD033 -->
