@@ -55,7 +55,7 @@ jobs:
           path: .dependencies/plenary.nvim
 
       - name: Set up Neovim
-        uses: rhysd/action-setup-vim@387ddb86526bf67490a750c5e481fdecdf3ef4f6 # v1.5.0
+        uses: rhysd/action-setup-vim@46cf85a6076d2028f9e8cdbb77ccf04816ac88f6 # v1.5.1
         with:
           neovim: true
           version: ${{ matrix.version }}

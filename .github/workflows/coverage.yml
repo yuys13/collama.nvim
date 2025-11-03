@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: Set up Neovim
-        uses: rhysd/action-setup-vim@387ddb86526bf67490a750c5e481fdecdf3ef4f6 # v1.5.0
+        uses: rhysd/action-setup-vim@46cf85a6076d2028f9e8cdbb77ccf04816ac88f6 # v1.5.1
         with:
           neovim: true
           version: stable
