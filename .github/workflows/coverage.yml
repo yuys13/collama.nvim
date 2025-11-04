@@ -28,7 +28,7 @@ jobs:
       - name: Setup lua
         uses: leafo/gh-actions-lua@8c9e175e7a3d77e21f809eefbee34a19b858641b # v12.0.0
         with:
-          luaVersion: luajit-2.1.0-beta3
+          luaVersion: luajit-2.1
 
       - name: Setup luarocks
         uses: leafo/gh-actions-luarocks@97053c556d6ce2c8e26eb7ac93743437c7af7248 # v6.0.0
