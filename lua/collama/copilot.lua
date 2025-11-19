@@ -35,7 +35,7 @@ local function clear_state()
 end
 
 local function is_moved()
-  if state.bufnr ~= vim.fn.bufnr() then
+  if state.bufnr ~= vim.fn.bufnr() or not state.pos then
     return true
   end
   local now_pos = vim.api.nvim_win_get_cursor(0)
@@ -65,6 +65,9 @@ local function show_extmark(text)
   end
 
   local bufnr, pos = state.bufnr, state.pos
+  if not pos then
+    return
+  end
   ---@type vim.api.keyset.set_extmark
   local opts = {}
 
@@ -163,6 +166,9 @@ function M.accept()
     vim.api.nvim_put(vim.split(result, '\n'), 'c', false, true)
   else
     local bufnr, pos = state.bufnr, state.pos
+    if not pos then
+      return
+    end
     -- just insert text.
     vim.api.nvim_buf_set_text(bufnr, pos[1] - 1, pos[2], pos[1] - 1, pos[2], vim.split(result, '\n'))
   end
