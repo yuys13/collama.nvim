@@ -24,7 +24,7 @@ local function clear_state()
 
   -- clear extmark
   if state.extmark_id then
-    vim.api.nvim_buf_del_extmark(state.bufnr, ns_id, state.extmark_id)
+    pcall(vim.api.nvim_buf_del_extmark, state.bufnr, ns_id, state.extmark_id)
     state.extmark_id = nil
   end
 
