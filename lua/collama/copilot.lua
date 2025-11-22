@@ -11,6 +11,37 @@ local ns_id = vim.api.nvim_create_namespace 'collama'
 
 local M = {}
 
+local function clear_state()
+  -- stop timer
+  state.timer:stop()
+
+  -- shutdown Job
+  if state.job then
+    logger.info(string.format('Generation canceled [%d]', state.job.pid))
+    state.job:kill(9)
+    state.job = nil
+  end
+
+  -- clear extmark
+  if state.extmark_id then
+    pcall(vim.api.nvim_buf_del_extmark, state.bufnr, ns_id, state.extmark_id)
+    state.extmark_id = nil
+  end
+
+  -- clear other state
+  state.bufnr = 0
+  state.pos = nil
+  state.result = nil
+end
+
+local function is_moved()
+  if state.bufnr ~= vim.fn.bufnr() or not state.pos then
+    return true
+  end
+  local now_pos = vim.api.nvim_win_get_cursor(0)
+  return state.pos[1] ~= now_pos[1] or state.pos[2] ~= now_pos[2]
+end
+
 ---get prefix and suffix from buffer
 ---@param bufnr number number of a buffer
 ---@param pos number[] cursor position
@@ -33,7 +64,10 @@ local function show_extmark(text)
     return
   end
 
-  local bufnr, pos = state:get_pos()
+  local bufnr, pos = state.bufnr, state.pos
+  if not pos then
+    return
+  end
   ---@type vim.api.keyset.set_extmark
   local opts = {}
 
@@ -44,8 +78,7 @@ local function show_extmark(text)
   if #lines == 0 then
     -- if generated result is a single line, display 'inline'
     opts.virt_text_pos = 'inline'
-    local extmark_id = vim.api.nvim_buf_set_extmark(bufnr, ns_id, pos[1] - 1, pos[2], opts)
-    state:set_extmark_id(extmark_id)
+    state.extmark_id = vim.api.nvim_buf_set_extmark(bufnr, ns_id, pos[1] - 1, pos[2], opts)
     logger.debug 'show_extmark end (single line)'
     return
   end
@@ -57,29 +90,29 @@ local function show_extmark(text)
     table.insert(opts.virt_lines, { { value, 'CollamaSuggest' } })
   end
 
-  local extmark_id = vim.api.nvim_buf_set_extmark(bufnr, ns_id, pos[1] - 1, pos[2], opts)
-  state:set_extmark_id(extmark_id)
+  state.extmark_id = vim.api.nvim_buf_set_extmark(bufnr, ns_id, pos[1] - 1, pos[2], opts)
   logger.debug 'show_extmark end (multi line)'
 end
 
 ---Set result and show extmark
 ---@param result string
 local function complete_job(result)
-  if state:get_job() == nil then
+  if state.job == nil then
     logger.info 'job is already canceled'
     return
   end
-  logger.info(string.format('Generation completed [%d]', state:get_job().pid))
-  state:set_result(result)
+  logger.info(string.format('Generation completed [%d]', state.job.pid))
+  state.result = result
   show_extmark(result)
-  state:set_job(nil)
+  state.job = nil
 end
 
 ---request Fill-In-the-Middle
 ---@param config CollamaConfig
 function M.request(config)
-  state:set_pos()
-  local prefix, suffix = get_buffer(state:get_pos())
+  state.bufnr = vim.fn.bufnr()
+  state.pos = vim.api.nvim_win_get_cursor(0)
+  local prefix, suffix = get_buffer(state.bufnr, state.pos)
 
   local api = require 'collama.api'
   local base_url = config.base_url or api.get_base_url()
@@ -95,19 +128,19 @@ function M.request(config)
 
   logger.info(string.format('Generating...[%d]', job.pid))
 
-  state:set_job(job)
+  state.job = job
 end
 
 ---request Fill-In-the-Middle with debounce
 ---@param config CollamaConfig
 ---@param debounce_time integer
 function M.debounced_request(config, debounce_time)
-  state:clear()
+  clear_state()
   -- request only normal buffer
   if vim.o.buftype ~= '' then
     return
   end
-  state:timer_start(
+  state.timer:start(
     debounce_time,
     0,
     vim.schedule_wrap(function()
@@ -117,27 +150,30 @@ function M.debounced_request(config, debounce_time)
 end
 
 function M.clear()
-  state:clear()
+  clear_state()
 end
 
 ---accept Fill-In-the-Middle result
 function M.accept()
-  local result = state:get_result()
+  local result = state.result
   if not result then
     return
   end
   logger.info 'accept'
 
-  if not state:is_moved() then
+  if not is_moved() then
     -- insert text at cursor position, and place cursor at end of inserted text.
     vim.api.nvim_put(vim.split(result, '\n'), 'c', false, true)
   else
-    local bufnr, pos = state:get_pos()
+    local bufnr, pos = state.bufnr, state.pos
+    if not pos or not vim.api.nvim_buf_is_valid(bufnr) then
+      return
+    end
     -- just insert text.
     vim.api.nvim_buf_set_text(bufnr, pos[1] - 1, pos[2], pos[1] - 1, pos[2], vim.split(result, '\n'))
   end
 
-  state:clear()
+  clear_state()
 end
 
 return M
