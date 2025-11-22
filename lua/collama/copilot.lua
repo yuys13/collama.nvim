@@ -166,7 +166,7 @@ function M.accept()
     vim.api.nvim_put(vim.split(result, '\n'), 'c', false, true)
   else
     local bufnr, pos = state.bufnr, state.pos
-    if not pos then
+    if not pos or not vim.api.nvim_buf_is_valid(bufnr) then
       return
     end
     -- just insert text.
