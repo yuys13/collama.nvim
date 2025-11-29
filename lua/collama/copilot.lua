@@ -86,7 +86,7 @@ local function show_extmark(text)
   opts.virt_text_pos = 'overlay'
 
   opts.virt_lines = {}
-  for _, value in pairs(lines) do
+  for _, value in ipairs(lines) do
     table.insert(opts.virt_lines, { { value, 'CollamaSuggest' } })
   end
 
