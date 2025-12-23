@@ -115,7 +115,13 @@ function M.request(config)
   local prefix, suffix = get_buffer(state.bufnr, state.pos)
 
   local api = require 'collama.api'
-  local base_url = config.base_url or api.get_base_url()
+  local envconfig = require 'collama.envconfig'
+  local base_url
+  if config.base_url then
+    base_url = config.base_url
+  else
+    base_url = envconfig.get_host():gsub('/$', '') .. '/api/'
+  end
 
   local job = api.generate(base_url, {
     prompt = prefix,
