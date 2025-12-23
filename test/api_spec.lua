@@ -3,7 +3,7 @@ local stub = require 'luassert.stub'
 local spy = require 'luassert.spy'
 local match = require 'luassert.match'
 
-describe('base_url', function()
+describe('get_host', function()
   local backup_ollama_host = vim.env.OLLAMA_HOST
 
   after_each(function()
@@ -12,15 +12,15 @@ describe('base_url', function()
 
   it('default', function()
     vim.env.OLLAMA_HOST = nil
-    local expected = 'http://127.0.0.1:11434/api/'
-    local actual = api.get_base_url()
+    local expected = 'http://127.0.0.1:11434'
+    local actual = api.get_host()
     assert.are_equal(expected, actual)
   end)
 
   it('OLLAMA_HOST', function()
     vim.env.OLLAMA_HOST = 'localhost:8080'
-    local expected = 'http://localhost:8080/api/'
-    local actual = api.get_base_url()
+    local expected = 'http://localhost:8080'
+    local actual = api.get_host()
     assert.are_equal(expected, actual)
   end)
 end)

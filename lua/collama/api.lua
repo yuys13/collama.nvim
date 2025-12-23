@@ -75,13 +75,13 @@ function url.join(...)
   return table.concat(temp, '/')
 end
 
----Get base url
+---Get host
 ---@return string
-function M.get_base_url()
+function M.get_host()
   if vim.env.OLLAMA_HOST then
-    return string.format('http://%s/api/', vim.env.OLLAMA_HOST)
+    return string.format('http://%s', vim.env.OLLAMA_HOST)
   end
-  return 'http://127.0.0.1:11434/api/'
+  return 'http://127.0.0.1:11434'
 end
 
 ---Request generate API to `url`
