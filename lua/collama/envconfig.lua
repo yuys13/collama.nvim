@@ -23,8 +23,10 @@ function M.get_host()
 
   local scheme = 'http'
   local rest = env_host
+  local has_scheme = false
   if env_host:match '^https?://' then
     scheme, rest = env_host:match '^(https?)://(.*)$'
+    has_scheme = true
   end
 
   -- Separate path
@@ -55,7 +57,7 @@ function M.get_host()
   local port = tonumber(port_str)
   if port_str == '' or not port then
     -- Default ports
-    if env_host:match '^https?://' then
+    if has_scheme then
       if scheme == 'https' then
         port = 443
       else
