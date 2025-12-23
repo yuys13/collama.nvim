@@ -61,7 +61,7 @@ describe('create request', function()
       '--compressed',
       '-d',
       vim.json.encode(expected_request_body),
-      'http://example.com/api/generate',
+      'http://example.com:11434/api/generate',
     }, { text = true }, match._)
   end)
 
