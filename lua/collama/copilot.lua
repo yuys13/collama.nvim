@@ -116,12 +116,7 @@ function M.request(config)
 
   local api = require 'collama.api'
   local envconfig = require 'collama.envconfig'
-  local base_url
-  if config.base_url then
-    base_url = config.base_url
-  else
-    base_url = envconfig.get_host():gsub('/$', '') .. '/api/'
-  end
+  local base_url = config.base_url or envconfig.get_host():gsub('/$', '') .. '/api/'
 
   local job = api.generate(base_url, {
     prompt = prefix,
