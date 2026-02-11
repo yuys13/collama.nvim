@@ -1,4 +1,5 @@
 std = "neovim"
+exclude = [".dependencies/*"]
 
 [rules]
 global_usage = "allow"
